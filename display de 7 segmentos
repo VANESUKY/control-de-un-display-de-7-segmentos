@@ -1,0 +1,197 @@
+PROCESSOR 16F887
+    
+#include <xc.inc>
+
+CONFIG FOSC = INTRC_NOCLKOUT
+CONFIG WDTE = OFF
+CONFIG PWRTE = ON
+CONFIG MCLRE = OFF
+CONFIG CP = OFF
+CONFIG CPD = OFF
+CONFIG BOREN = OFF
+CONFIG IESO = OFF
+CONFIG FCMEN = ON
+CONFIG DEBUG = ON
+
+CONFIG BOR4V=BOR40V
+CONFIG WRT = OFF
+    
+PSECT udata
+pausa1:
+    DS 1
+pausa2:
+    DS 1
+pausa3:
+    DS 1
+    
+PSECT resetVec,class=CODE,delta=2
+resetVec:
+    PAGESEL	main
+    goto	main
+    
+PSECT code
+ 
+    numero0:
+    movlw	0b00111111  ;se carga el número 0
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	 main
+    return
+
+PSECT code
+    numero1:
+    movlw	0b00000110  ;se carga el número 1
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+
+PSECT code
+    numero2:
+    movlw	0b01011011  ;se carga el número 2
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+    
+PSECT code
+    numero3:
+    movlw	0b01001111  ;se carga el número 3
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return    
+
+PSECT code
+    numero4:
+    movlw	0b01100110  ;se carga el número 4
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+
+PSECT code
+    numero5:
+    movlw	0b01101101  ;se carga el número 5
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+   
+PSECT code
+    numero6:
+    movlw	0b01111101  ;se carga el número 6
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+
+PSECT code
+numero7:
+    movlw	0b00000111  ;se carga el número 7
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+
+PSECT code
+numero8:
+    movlw	0b01111111  ;se carga el número 8
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+
+PSECT code
+numero9:
+    movlw	0b01101111  ;se carga el número 9
+    BANKSEL	PORTA	    ;se trabaja en el puerto A
+    movwf	PORTA	    ;se carga el número en las salidas de PORTA
+    PAGESEL	main
+    return
+
+PSECT code
+delay_255us:
+    movlw	0xff
+    movwf	pausa3
+salto1:
+    decfsz	pausa3
+    goto	salto1
+    return
+
+PSECT code
+delay_65ms:
+    movlw	0xff
+    movwf	pausa2
+salto2:
+    call	delay_255us
+    decfsz	pausa
+    goto	salto2
+    return
+ 
+PSECT code
+delay_500ms:
+    movlw	0x08
+    movwf	pausa1
+salto3:
+    call	delay_65ms
+    decfsz	pausa1
+    goto	salto3
+    return
+   
+PSECT code
+main:
+    bcf		0x03,0	    ;no ocurre acarreo en el MSB del resultado
+    bcf		0x03,5	    ;se pone en 0 el bit 5 del reg. status
+    bcf		0x03,6	    ;se pone en 0 el bit 6 del reg. status
+    BANKSEL	ANSEL	    ;se trabaja en el banco ansel
+    CLRF	ANSEL	    ;se inicializa PORTA como salida
+    BANKSEL	TRISA	    ;se trabaja en TRISA
+    MOVLW	0b00000000  ;se establecen los bits de salida
+    MOVWF	TRISA	    ;los bits de salida se trabajan en trisa
+    BANKSEL	PORTA	    ;se trabaja en PORTA
+    CLRF	PORTA	    ;se habilita PORTA
+    BANKSEL	OSCCON	    ;se trabaja en el registro osccon
+    MOVLW	0b01110000  ;se mueve la literal a w
+    MOVWF	OSCCON	    ;se mueve w a f
+    
+INICIO:
+    call numero0	    ;se llama a la programación en numero0
+    call delay_500ms	    ;se llama ala programación en delay_500ms
+    
+    call numero1
+    call delay_500ms
+    
+    call numero2
+    call delay_500ms 
+    
+    call numero3
+    call delay_500ms
+    
+    call numero4
+    call delay_500ms
+    
+    call numero5
+    call delay_500ms
+    
+    call numero6
+    call delay_500ms
+    
+    call numero7
+    call delay_500ms
+    
+    call numero8
+    call delay_500ms
+    
+    call numero9
+    call delay_500ms
+    
+    GOTO INICIO
+    END
+    
+    
+    ;MÉNDEZ OSORIO JULIA VANESSA
+    NUM DE CONTRO: 17080238
+    ;MATERIA MICROCONTROLADORES
+    ; DOCENTE: ING. JORGE ALBERTO SILVA VALENZUELA
+    ;INSTITUTO TECNOLOGICO SUPERIOR DE COATZACOALCOS
